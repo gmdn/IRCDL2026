@@ -1,5 +1,6 @@
 library(shiny)
 library(htmltools)
+library(jsonlite)
 
 hex_to_rgba <- function(hex, alpha = 0.35) {
   hex <- gsub("#", "", hex)

@@ -1,3 +1,5 @@
+source("global.R")
+
 ui <- fluidPage(
   titlePanel("annotaterm demo"),
   
@@ -15,9 +17,11 @@ ui <- fluidPage(
         font-weight: 600;
       }
       .btn-row .btn { margin-right: 6px; }
+      .btn-row { display: flex; flex-wrap: wrap; gap: 6px; }
     "))
   ),
   
+  # JS: capture selection in TEXTAREA
   tags$script(HTML("
     document.addEventListener('DOMContentLoaded', function() {
       var ta = document.getElementById('input_text');
@@ -65,9 +69,28 @@ ui <- fluidPage(
         actionButton("add_segment", "add segment"),
         actionButton("save_composite", "save composite")
       ),
-      br(), br(),
+      br(),
       strong("Current segments:"),
       verbatimTextOutput("composite_segments_text"),
+      
+      hr(),
+      h4("Edit annotations"),
+      div(
+        class = "btn-row",
+        actionButton("delete_last", "delete last"),
+        actionButton("clear_all", "clear all")
+      ),
+      br(),
+      selectInput("delete_term_id", "Delete by term_id:", choices = character(0)),
+      actionButton("delete_term_id_btn", "delete selected"),
+      
+      hr(),
+      h4("Export"),
+      div(
+        class = "btn-row",
+        downloadButton("download_csv", "export CSV"),
+        downloadButton("download_json", "export JSON")
+      ),
       
       hr(),
       h4("Annotations"),
@@ -79,7 +102,10 @@ ui <- fluidPage(
       textAreaInput(
         inputId = "input_text",
         label = NULL,
-        value = "Waste management is important. Waste disposal is also important. Waste in general is a problem.\nWaste management and disposal.",
+        value = paste0(
+          "Waste management is important. Waste disposal is also important. ",
+          "Waste in general is a problem.\nWaste management and disposal."
+        ),
         width = "100%",
         rows = 8
       ),
